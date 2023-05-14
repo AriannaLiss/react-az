@@ -3,15 +3,10 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PostItem from './PostItem';
 
 const PostList = ({posts, title, remove}) => {
-  if (!posts.length) {
-      return(
-        <h1 style={{textAlign:"center"}}>No posts</h1>
-      )
-  }
   return (
       <div>
           <h1 style={{textAlign: 'center'}}>
-            {title}
+            {posts.length ? title : 'NoPosts'}
           </h1>
           <TransitionGroup>
             {posts.map((post, index) => 
