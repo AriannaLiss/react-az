@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react'
-import './App.css'
+import './styles/App.css'
 import PostFilter from './components/PostFilter';
 import PostForm from './components/PostForm';
 import PostList from './components/PostList.jsx';
