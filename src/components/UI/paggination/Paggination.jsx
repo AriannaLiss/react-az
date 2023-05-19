@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { getPagesArray } from '../../utils/pages';
+import React from 'react';
 import cl from './Paggination.module.css'
 
 const Paggination = ({pagesArray, page, changePage}) => {

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import PostService from "../API/PostService";
-import { getPageCount, getPages } from "../components/utils/pages";
+import { getPageCount, getPages } from "../utils/pages";
 import { useFetching } from "./useFetching";
 
 export const usePaggination = (setPosts, setPagesArray) => {
