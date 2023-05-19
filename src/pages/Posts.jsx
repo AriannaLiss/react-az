@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {usePosts} from '../hooks/usePosts'
 import {usePaggination} from '../hooks/usePaggination'
 import MyButton from '../components/UI/button/MyButton.jsx'
 import MyModal from '../components/UI/MyModal/MyModal.jsx'
 import Loader from '../components/UI/Loader/Loader.jsx'
-import Paggination from '../components/UI/paggination/Paggination.jsx'
 import PostForm from '../components/PostForm'
 import PostFilter from '../components/PostFilter'
 import PostList from '../components/PostList'
+import { useObserver } from '../hooks/useObserver';
+import MySelect from '../components/UI/select/MySelect';
 
 function Posts() {
 
@@ -18,12 +19,18 @@ function Posts() {
   const [limit, setLimit] = useState(10);
   const [pagesArray, setPagesArray] = useState([])
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
+  const [totalPages, setTotalPages] = useState(0);
+  const lastElement = useRef();
 
-  const [fetchPosts, isPostsLoading, postError] = usePaggination(setPosts, setPagesArray)
+  const [fetchPosts, isPostsLoading, postError] = usePaggination(posts, setPosts, totalPages, setTotalPages, setPagesArray)
   
+  useObserver(lastElement, page<totalPages, isPostsLoading, ()=> {
+    setPage(page+1);
+  })
+
   useEffect(()=>{
-    fetchPosts(limit,page)
-  },[page])
+    fetchPosts(limit, page)
+  },[page, limit])
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
@@ -49,22 +56,29 @@ function Posts() {
         filter={filter} 
         setFilter={setFilter}
       />
+      <MySelect
+        value={limit}
+        onChange={value => setLimit(value)}
+        defaultValue='Amout of elements on the page'
+        options={[
+          {value: 5, name: '5'},
+          {value: 10, name: '10'},
+          {value: 25, name: '25'},
+          {value: -1, name: 'Show all'},
+        ]}
+      />
       {postError &&
         <h1>There is an error: {postError}</h1>
       }
-      {isPostsLoading
-        ? <div style={{display:'flex', justifyContent: 'center', marginTop: 50}}><Loader /></div>
-        : <PostList 
-            remove={removePost} 
-            posts={sortedAndSearchedPosts} 
-            title='JS posts'
-          />
-      }
-      <Paggination
-        page = {page}
-        changePage = {changePage}
-        pagesArray = {pagesArray}
+      <PostList 
+        remove={removePost} 
+        posts={sortedAndSearchedPosts} 
+        title='JS posts'
       />
+      <div ref={lastElement} style={{height:20}}/>
+      {isPostsLoading &&
+        <div style={{display:'flex', justifyContent: 'center', marginTop: 50}}><Loader /></div>
+      }
     </div>
   );
 }
