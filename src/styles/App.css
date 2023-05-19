@@ -23,6 +23,10 @@
     margin: 1rem;
     border-radius: 1rem;
 }
+
+.post__btns {
+    display:flex;
+}
   
 .post-enter {
     opacity: 0;
